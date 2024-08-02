@@ -1,0 +1,6 @@
+numpy
+pandas
+torch
+dxcam
+matplotlib
+pywin32
