@@ -73,7 +73,7 @@ echo "Using python from: $suika_python"
 export PYTHON_KEYRING_BACKEND=keyring.backends.null.KEYring
 
 ${suika_python} -m venv ${DIR}/venv/ || return
-. ${DIR}/venv/bin/activate
+. ${DIR}/venv/Scripts/activate
 # from here, python3 should be setup
 
 unset no_deps
@@ -87,4 +87,4 @@ else
     no_deps="--no-deps"
 fi
 echo "$no_deps"
-pip install $no_deps -e ${DIR}/.[test]
+pip install $no_deps .[test]
