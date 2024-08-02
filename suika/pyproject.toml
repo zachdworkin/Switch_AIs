@@ -1,0 +1,41 @@
+[build-system]
+requires = ["setuptools >= 58.0", "wheel"]
+
+[project]
+name = "suika"
+description = "An AI bot to play Suika Game"
+version = "1.0.0"
+readme = "README.md"
+requires-python = ">=3.9"
+authors = [
+    { name="Zachary Dworkin", email="zachary.dworkin@gmail.com" }
+]
+
+dependencies = [
+    "numpy",
+    "pandas",
+    "torch",
+    "dxcam",
+    "matplotlib",
+    "win32"
+]
+
+[project.optional-dependencies]
+test = [
+    "pytest"
+]
+ci = [
+    "black",
+    "pylint"
+]
+
+[project.scripts]
+suika = "suika:cli_entry"
+
+[tool.black]
+line-length = 80
+
+[tool.pytest.ini_options]
+filterwarnings = [
+    "ignore::DeprecationWarning"
+]
