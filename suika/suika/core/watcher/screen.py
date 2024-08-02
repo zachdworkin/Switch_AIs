@@ -15,14 +15,16 @@ class WindowCapture:
 
     def get_hwnd(self):
         windows_list = []
+
         def get_window_info(hwnd, result):
             win_text = win32gui.GetWindowText(hwnd)
             windows_list.append((hwnd, win_text))
-            win32gui.EnumWindows(get_window_info, None)
-            for (hwnd, win_text) in windows_list:
-                if "Ryujinx" in win_text:
-                    return hwnd
-            return 0
+
+        win32gui.EnumWindows(get_window_info, None)
+        for (hwnd, win_text) in windows_list:
+            if "Ryujinx" in win_text:
+                return hwnd
+        return 0
 
     def take_screenshot(self):
         return self.cam.grab()
