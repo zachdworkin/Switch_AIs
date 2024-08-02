@@ -17,7 +17,7 @@ dependencies = [
     "torch",
     "dxcam",
     "matplotlib",
-    "win32"
+    "pywin32"
 ]
 
 [project.optional-dependencies]
