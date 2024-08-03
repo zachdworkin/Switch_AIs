@@ -16,7 +16,8 @@ dependencies = [
     "pandas",
     "torch",
     "matplotlib",
-    "pillow"
+    "pillow",
+    "pygetwindow"
 ]
 
 [project.optional-dependencies]
