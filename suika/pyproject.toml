@@ -15,9 +15,8 @@ dependencies = [
     "numpy",
     "pandas",
     "torch",
-    "dxcam",
     "matplotlib",
-    "pywin32"
+    "pillow"
 ]
 
 [project.optional-dependencies]
