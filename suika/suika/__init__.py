@@ -2,6 +2,40 @@
 
 from suika.core.watcher.screen import WindowCapture
 import argparse
+import logging
+import datetime
+import os
+import path
+
+logging.basicCoincif(
+    level = logging.INFO,
+    handlers = [],
+    encoding = "utf-8",
+    force = True
+)
+logger = logging.getLogger(__name__)
+
+def setup_logging(output_root, quiet=False) -> None:
+    """Setup a log directory structure for the application.
+
+    Args:
+        output_root (string): main directory to store log subdirectories
+        quiet (bool, optional): Determines if handler should use stderr. Defaults to False.
+    """
+    
+    log_path = os.path.join(output_root, "suika_logs", "logs")
+    logfile_name = f"output{datetime.now().strftime('%Y%m%d%H%M%S')}.log"
+    logfile_path = os.path.join(log_path, logfile_name)
+    for handle in logger.handlers:
+        logger.removeHandler(handle)
+
+    # Add handler that goes to stderr
+    if not quiet:
+        logger.addHandler(logging.StreamHandler())
+
+    os.makedirs(log_path, exist_ok=True)
+    logger.addHandler(logging.FileHandler(logfile_path))
+
 
 def get_args(args) -> argparse.Namespace:
     """
