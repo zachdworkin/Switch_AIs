@@ -1,10 +1,10 @@
-#pylint: disable=missing-module-docstring
+# pylint: disable=missing-module-docstring
 from suika.core.watcher.screen import WindowCapture
 
+
 class ReinforcementLearning:
-    """
-    Reinforcement learning manager for training the model.
-    """
+    """Reinforcement learning manager for training the model."""
+
     def __init__(self, app_name):
         self.app_name = app_name
         self.wc = WindowCapture()
@@ -20,6 +20,5 @@ class ReinforcementLearning:
             # TODO send input to emulator
 
     def test(self):
-        """empty method to satisfy pylint
-        """
+        """empty method to satisfy pylint"""
         # TODO remove later

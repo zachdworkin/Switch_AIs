@@ -9,12 +9,10 @@ import os
 from suika.core.managers.reinforcement import ReinforcementLearning
 
 logging.basicConfig(
-    level = logging.INFO,
-    handlers = [],
-    encoding = "utf-8",
-    force = True
+    level=logging.INFO, handlers=[], encoding="utf-8", force=True
 )
 logger = logging.getLogger(__name__)
+
 
 def setup_logging(output_root, quiet=False) -> None:
     """Setup a log directory structure for the application.
@@ -43,21 +41,23 @@ def get_args(args) -> argparse.Namespace:
     Use argparse to get values of command line arguments.
     """
     parser = argparse.ArgumentParser(
-        description="Run AI's based on emulator for suika game")
+        description="Run AI's based on emulator for suika game"
+    )
     parser.add_argument(
         "--app_name",
         type=str,
         help="Name of the application window to take screenshot",
-        default="Ryujinx 1.1.1364"
+        default="Ryujinx 1.1.1364",
     )
     parser.add_argument(
         "-v",
         "--verbose",
         action="store_true",
-        help="Increase output verbosity"
+        help="Increase output verbosity",
     )
 
     return parser.parse_args(args)
+
 
 # pylint: disable-next=missing-function-docstring
 def cli_entry(args=None) -> int:
