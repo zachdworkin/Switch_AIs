@@ -1,6 +1,6 @@
 # Description
 
-from suika.core.watcher.screen import WindowCapture
+from suika.core.managers.reinforcement import ReinforcementLearning
 import argparse
 import logging
 import datetime
@@ -61,5 +61,6 @@ def get_args(args) -> argparse.Namespace:
 # pylint: disable-next=missing-function-docstring
 def cli_entry(args=None) -> int:
     parsed_args = get_args(args)
-    WindowCapture().collect_screenshot(parsed_args.app_name)
+    rfl = ReinforcementLearning(parsed_args.app_name)
+    rfl.train()
     return 0
