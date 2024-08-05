@@ -17,7 +17,9 @@ dependencies = [
     "torch",
     "matplotlib",
     "pillow",
-    "pygetwindow"
+    "pygetwindow",
+    "argparse",
+    "logging"
 ]
 
 [project.optional-dependencies]
