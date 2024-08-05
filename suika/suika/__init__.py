@@ -1,13 +1,14 @@
-# Description
+"""Suika AI based on reinforcement learning
+"""
 
-from suika.core.managers.reinforcement import ReinforcementLearning
 import argparse
 import logging
-import datetime
+from datetime import datetime
 import os
-import path
 
-logging.basicCoincif(
+from suika.core.managers.reinforcement import ReinforcementLearning
+
+logging.basicConfig(
     level = logging.INFO,
     handlers = [],
     encoding = "utf-8",
@@ -22,9 +23,9 @@ def setup_logging(output_root, quiet=False) -> None:
         output_root (string): main directory to store log subdirectories
         quiet (bool, optional): Determines if handler should use stderr. Defaults to False.
     """
-    
+
     log_path = os.path.join(output_root, "suika_logs", "logs")
-    logfile_name = f"output{datetime.now().strftime('%Y%m%d%H%M%S')}.log"
+    logfile_name = f"output_{datetime.now().strftime('%Y%m%d%H%M%S')}.log"
     logfile_path = os.path.join(log_path, logfile_name)
     for handle in logger.handlers:
         logger.removeHandler(handle)
@@ -60,6 +61,14 @@ def get_args(args) -> argparse.Namespace:
 
 # pylint: disable-next=missing-function-docstring
 def cli_entry(args=None) -> int:
+    """main entry point for the application.
+
+    Args:
+        args (_type_, optional): Args to modify application. Defaults to None.
+
+    Returns:
+        int: error code
+    """
     parsed_args = get_args(args)
     rfl = ReinforcementLearning(parsed_args.app_name)
     rfl.train()

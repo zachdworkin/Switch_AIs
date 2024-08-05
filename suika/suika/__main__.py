@@ -3,4 +3,4 @@ import sys
 import suika
 
 if __name__ == "__main__":
-	sys.exit(suika.cli_entry())
+    sys.exit(suika.cli_entry())
