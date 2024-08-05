@@ -5,11 +5,13 @@ import os
 class WindowCapture:
 
     def __init__(self):
-        self.ryujinx_offsets = {
-            "left": 100,
-            "top": 125,
-            "right": 200,
-            "bottom": 0
+        self.offsets = {
+            self.ryujinx_offsets : {
+                "left": 100,
+                "top": 125,
+                "right": 200,
+                "bottom": 0    
+            }
         }
         pass
 
@@ -28,10 +30,10 @@ class WindowCapture:
 
     def take_screenshot(self, window):
         return ImageGrab.grab(bbox=(
-                    window.left + self.ryujinx_offsets["left"],
-                    window.top + self.ryujinx_offsets["top"],
-                    window.right + self.ryujinx_offsets["right"],
-                    window.bottom + self.ryujinx_offsets["bottom"]
+                    window.left + self.offsets['ryujinx_offsets']["left"],
+                    window.top + self.offsets['ryujinx_offsets']["top"],
+                    window.right + self.offsets['ryujinx_offsets']["right"],
+                    window.bottom + self.offsets['ryujinx_offsets']["bottom"]
                 )
         )
 
