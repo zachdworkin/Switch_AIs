@@ -1,7 +1,8 @@
-#pylint: disable=missing-module-docstring
+# pylint: disable=missing-module-docstring
 import os
 from PIL import ImageGrab
 import pygetwindow as gw
+
 
 class WindowCapture:
     """
@@ -9,18 +10,10 @@ class WindowCapture:
     """
 
     def __init__(self):
-        """
-        offests based on application type
-        """
+        """Offests based on application type"""
         self.offsets = {
-            "ryujinx" : {
-                "left": 100,
-                "top": 125,
-                "right": 200,
-                "bottom": 0    
-            }
+            "ryujinx": {"left": 100, "top": 125, "right": 200, "bottom": 0}
         }
-
 
     def find_app_name(self, app_name):
         """
@@ -55,17 +48,17 @@ class WindowCapture:
         return gw.getWindowsWithTitle(app_name)[0]
 
     def take_screenshot(self, window, offset):
-        """Take a screenshot of the window.
-        """
+        """Take a screenshot of the window."""
         if offset not in self.offsets:
             return None
 
-        return ImageGrab.grab(bbox=(
-                    window.left + self.offsets[offset]["left"],
-                    window.top + self.offsets[offset]["top"],
-                    window.right + self.offsets[offset]["right"],
-                    window.bottom + self.offsets[offset]["bottom"]
-                )
+        return ImageGrab.grab(
+            bbox=(
+                window.left + self.offsets[offset]["left"],
+                window.top + self.offsets[offset]["top"],
+                window.right + self.offsets[offset]["right"],
+                window.bottom + self.offsets[offset]["bottom"],
+            )
         )
 
     def save_screenshot(self, screenshot, path):
