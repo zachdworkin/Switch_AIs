@@ -18,8 +18,7 @@ dependencies = [
     "matplotlib",
     "pillow",
     "pygetwindow",
-    "argparse",
-    "logging"
+    "argparse"
 ]
 
 [project.optional-dependencies]
