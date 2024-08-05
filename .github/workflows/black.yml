@@ -1,0 +1,22 @@
+---
+  name: 'Run Black'
+  on:
+    push:
+      branches:
+        - main
+    pull_request:
+      branches:
+        - '**'
+
+  jobs:
+    build:
+      runs-on: windows-latest
+      steps:
+      - uses: actions/checkout@v4
+      - name: Analyzing the code with python black
+        shell: bash
+        working-directory: ./suika
+        run: |
+          source ./bootstrap.sh
+          black --check . | tee black-scan-result
+          cat black-scan-result
