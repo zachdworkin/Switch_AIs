@@ -87,4 +87,4 @@ else
     no_deps="--no-deps"
 fi
 echo "$no_deps"
-pip install $no_deps .[test]
+pip install $no_deps .[test,ci]
