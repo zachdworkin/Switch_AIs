@@ -18,6 +18,7 @@ class ReinforcementLearning:
             self.wc.collect_screenshot(self.app_name)
             # TODO determine next input
             # TODO send input to emulator
+            break
 
     def test(self):
         """empty method to satisfy pylint"""
