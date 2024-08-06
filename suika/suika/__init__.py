@@ -14,7 +14,7 @@ logging.basicConfig(
 logger = logging.getLogger(__name__)
 
 
-def setup_logging(output_root, quiet=False) -> None:
+def setup_logger(output_root, quiet=False) -> None:
     """Setup a log directory structure for the application.
 
     Args:
@@ -50,6 +50,17 @@ def get_args(args) -> argparse.Namespace:
         default="Ryujinx 1.1.1364",
     )
     parser.add_argument(
+        "--output_root",
+        type=str,
+        help="Root directory to store logs and screenshots",
+        default=os.environ["PWD"],
+    )
+    parser.add_argument(
+        "--quiet",
+        type=bool,
+        help="Use stderr for logging",
+    )
+    parser.add_argument(
         "-v",
         "--verbose",
         action="store_true",
@@ -70,6 +81,7 @@ def cli_entry(args=None) -> int:
         int: error code
     """
     parsed_args = get_args(args)
-    rfl = ReinforcementLearning(parsed_args.app_name)
+    setup_logger(parsed_args.output_root, parsed_args.quiet)
+    rfl = ReinforcementLearning(parsed_args.app_name, parsed_args.output_root)
     rfl.train()
     return 0

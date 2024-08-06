@@ -1,5 +1,4 @@
 # pylint: disable=missing-module-docstring
-import os
 from PIL import ImageGrab
 import pygetwindow as gw  # type: ignore
 
@@ -9,8 +8,9 @@ class WindowCapture:
     Screenshot a window based on application name and specified offests for the application.
     """
 
-    def __init__(self):
+    def __init__(self, output_root):
         """Offests based on application type"""
+        self.output_root = output_root
         self.offsets = {
             "none": {"left": 0, "top": 0, "right": 0, "bottom": 0},
             "ryujinx": {"left": 100, "top": 125, "right": 200, "bottom": 0},
@@ -97,5 +97,5 @@ class WindowCapture:
             return
 
         self.take_screenshot(window, app_name)
-        self.save_screenshot(f"{os.environ['PWD']}/screenshot.png")
+        self.save_screenshot(f"{self.output_root}/screenshot.png")
         self.close_screenshot()
