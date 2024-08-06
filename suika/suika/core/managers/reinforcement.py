@@ -5,9 +5,10 @@ from suika.core.watcher.screen import WindowCapture
 class ReinforcementLearning:
     """Reinforcement learning manager for training the model."""
 
-    def __init__(self, app_name):
+    def __init__(self, app_name, output_root):
         self.app_name = app_name
-        self.wc = WindowCapture()
+        self.output_root = output_root
+        self.wc = WindowCapture(self.output_root)
 
     def train(self):
         """
