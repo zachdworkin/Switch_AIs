@@ -12,8 +12,10 @@ class WindowCapture:
     def __init__(self):
         """Offests based on application type"""
         self.offsets = {
-            "ryujinx": {"left": 100, "top": 125, "right": 200, "bottom": 0}
+            "none": {"left": 0, "top": 0, "right": 0, "bottom": 0},
+            "ryujinx": {"left": 100, "top": 125, "right": 200, "bottom": 0},
         }
+        self.screenshot = None
 
     def find_app_name(self, app_name):
         """
@@ -50,9 +52,9 @@ class WindowCapture:
     def take_screenshot(self, window, offset):
         """Take a screenshot of the window."""
         if offset not in self.offsets:
-            return None
+            offset = "none"
 
-        return ImageGrab.grab(
+        self.screenshot = ImageGrab.grab(
             bbox=(
                 window.left + self.offsets[offset]["left"],
                 window.top + self.offsets[offset]["top"],
@@ -61,26 +63,27 @@ class WindowCapture:
             )
         )
 
-    def save_screenshot(self, screenshot, path):
+    def save_screenshot(self, path):
         """Save a screenshot based on path to it
 
         Args:
             screenshot (obj): screenshot to be saved
             path (str): location to save screenshot
         """
-        if path is None:
+        if path is None or self.screenshot is None:
             return -1
 
-        screenshot.save(path)
+        self.screenshot.save(path)
         return 0
 
-    def close_screenshot(self, screenshot):
+    def close_screenshot(self):
         """close a screenshot fd
 
         Args:
             screenshot (obj): screenshot fd object
         """
-        screenshot.close()
+        if self.screenshot is not None:
+            self.screenshot.close()
 
     def collect_screenshot(self, app_name):
         """collect a screenshot based on application name
@@ -93,6 +96,6 @@ class WindowCapture:
             print("Window not found")
             return
 
-        screenshot = self.take_screenshot(window, app_name.lower())
-        self.save_screenshot(screenshot, f"{os.environ['PWD']}/screenshot.png")
-        self.close_screenshot(screenshot)
+        self.take_screenshot(window, app_name.lower())
+        self.save_screenshot(f"{os.environ['PWD']}/screenshot.png")
+        self.close_screenshot()
