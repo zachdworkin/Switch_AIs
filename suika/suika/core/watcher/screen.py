@@ -96,6 +96,6 @@ class WindowCapture:
             print("Window not found")
             return
 
-        self.take_screenshot(window, app_name.lower())
+        self.take_screenshot(window, app_name)
         self.save_screenshot(f"{os.environ['PWD']}/screenshot.png")
         self.close_screenshot()
