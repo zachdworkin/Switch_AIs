@@ -1,7 +1,7 @@
 # pylint: disable=missing-module-docstring
 import os
 from PIL import ImageGrab
-import pygetwindow as gw
+import pygetwindow as gw  # type: ignore
 
 
 class WindowCapture:

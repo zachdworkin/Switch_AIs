@@ -1,0 +1,22 @@
+---
+  name: 'Run MyPy'
+  on:
+    push:
+      branches:
+        - main
+    pull_request:
+      branches:
+        - '**'
+
+  jobs:
+    build:
+      runs-on: windows-latest
+      steps:
+      - uses: actions/checkout@v4
+      - name: Analyzing the code with python mypy
+        shell: bash
+        working-directory: ./suika
+        run: |
+          source ./bootstrap.sh
+          mypy suika --check-untyped-defs --disallow-untyped-decorators | tee mypy-scan-result
+          cat mypy-scan-result

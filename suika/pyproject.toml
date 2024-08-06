@@ -27,7 +27,8 @@ test = [
 ]
 ci = [
     "black",
-    "pylint"
+    "pylint",
+    "mypy"
 ]
 
 [project.scripts]
