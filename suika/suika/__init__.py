@@ -5,6 +5,7 @@ import argparse
 import logging
 from datetime import datetime
 import os
+from PIL import Image
 
 from suika.core.managers.reinforcement import ReinforcementLearning
 
@@ -22,7 +23,7 @@ def setup_logger(output_root, quiet=False) -> None:
         quiet (bool, optional): Determines if handler should use stderr. Defaults to False.
     """
 
-    log_path = os.path.join(output_root, "suika_logs", "logs")
+    log_path = os.path.join(output_root, "logs")
     logfile_name = f"output_{datetime.now().strftime('%Y%m%d%H%M%S')}.log"
     logfile_path = os.path.join(log_path, logfile_name)
     for handle in logger.handlers:
@@ -47,7 +48,7 @@ def get_args(args) -> argparse.Namespace:
         "--app_name",
         type=str,
         help="Name of the application window to take screenshot",
-        default="Ryujinx 1.1.1364",
+        default="Ryujinx 1.1.1",
     )
     parser.add_argument(
         "--output_root",
@@ -82,6 +83,20 @@ def cli_entry(args=None) -> int:
     """
     parsed_args = get_args(args)
     setup_logger(parsed_args.output_root, parsed_args.quiet)
-    rfl = ReinforcementLearning(parsed_args.app_name, parsed_args.output_root)
-    rfl.train()
+    try:
+        rfl = ReinforcementLearning(
+            parsed_args.app_name,
+            os.path.join(parsed_args.output_root, "logs"),
+        )
+        rfl.train()
+    except (
+        FileNotFoundError,
+        Image.UnidentifiedImageError,
+        ValueError,
+        TypeError,
+    ) as err:
+        logger.error("Training failed")
+        logger.error(err)
+        return -1
+
     return 0

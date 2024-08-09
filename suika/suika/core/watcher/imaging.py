@@ -1,57 +1,133 @@
 # pylint: disable=missing-module-docstring
 import os
-from pathlib import Path
-import matplotlib.pyplot as plt
+import shutil
+import logging
+from enum import Enum
 from PIL import Image
-import numpy as np
+
+from suika.core.watcher.screen import WindowCapture
+
+logger = logging.getLogger(__name__)
+
+
+class ImagingType(Enum):
+    """Enum for Imaging types.
+
+    Attributes
+    ----------
+    COLOR : const int
+        Color image type
+    BW : const int
+        Black and white image type
+    UNKN : const int
+        Unknown Image type
+    """
+
+    COLOR = "color"
+    BW = "bw"
+    UNKN = "UNKN"
+
+    def __str__(self):
+        return self.value
 
 
 class Imaging:
     """Imaging manager for capturing and processing images."""
 
-    def __init__(self, screenshot_path: str):
-        self.screenshot_path: str = screenshot_path
-        self.black_and_white: Image.Image = Image.Image()
-        self.screenshot: np.ndarray = np.ndarray(0)
-        self.bw_data: np.ndarray = np.ndarray(0)
+    def __init__(self, app_name, output_root):
+        self.wc = WindowCapture(app_name)
+        self.output_root = output_root
+        self.history: dict = {
+            str(ImagingType.COLOR): [],
+            str(ImagingType.BW): [],
+            str(ImagingType.UNKN): [],
+        }
+        self.__create_paths()
+        self.path_prefixess = {
+            str(ImagingType.COLOR): os.path.join(
+                self.output_root,
+                str(ImagingType.COLOR),
+            ),
+            str(ImagingType.BW): os.path.join(
+                self.output_root,
+                str(ImagingType.BW),
+            ),
+            str(ImagingType.UNKN): os.path.join(
+                self.output_root,
+                str(ImagingType.UNKN),
+            ),
+        }
 
-    def black_and_whitify(self):
-        """Convert the image to black and white."""
-        try:
-            img = Image.open(self.screenshot_path)
-            img.convert("l")
-        except FileNotFoundError:
-            return None
+    def __create_paths(self):
+        """Create upload paths for the images."""
+        for img_type in ImagingType:
+            path = os.path.join(self.output_root, str(img_type))
+            if os.path.exists(path):
+                shutil.rmtree(path)
 
-        return img
-
-    def save_black_and_white(self, path):
-        """Save the black and white image."""
-        # TODO determine what path should be
-        try:
-            self.black_and_white.save(path)
-        except FileNotFoundError:
-            self.close()
-
-    def close(self):
-        """Close the image."""
-        self.black_and_white.close()
-
-    def analyze(self):
-        """Analyze the image."""
-        try:
-            self.black_and_white = self.black_and_whitify()
-            self.screenshot = plt.imread(self.screenshot_path)
-            self.bw_data = np.asarray(self.black_and_white)
-            self.save_black_and_white(
-                os.path.join(
-                    os.path.dirname(self.screenshot_path),
-                    Path(self.screenshot_path).stem + "_bw.png",
+            try:
+                os.makedirs(
+                    path,
+                    exist_ok=False,
                 )
-            )
-        except FileNotFoundError:
-            self.black_and_white.close()
-        finally:
-            self.black_and_white.close()
+            except OSError as err:
+                logger.error("Could not create upload paths.")
+                raise err from err
 
+    def get_idx(self, img_type):
+        """get index of last image
+
+        Returns:
+            int: position of last image
+        """
+        return len(self.history[str(img_type)])
+
+    def black_and_whitify(self, screenshot, path):
+        """Convert the image to black and white."""
+        bw_img = None
+        try:
+            with Image.open(screenshot) as color_img:
+                copy = color_img.copy()
+                bw_img = copy.convert("L")
+        except (
+            FileNotFoundError,
+            Image.UnidentifiedImageError,
+            ValueError,
+            TypeError,
+        ) as err:
+            logger.error("Could not convert image to black and white.")
+            raise err from err
+
+        self.wc.save_screenshot(bw_img, path)
+
+    def analyze_next_screenshot(self):
+        """Analyze the image."""
+        next_color = os.path.join(
+            self.path_prefixess[str(ImagingType.COLOR)],
+            f"{self.get_idx(str(ImagingType.COLOR))}.png",
+        )
+        next_bw = os.path.join(
+            self.path_prefixess[str(ImagingType.BW)],
+            f"{self.get_idx(str(ImagingType.BW))}.png",
+        )
+        try:
+            self.wc.collect_screenshot(next_color)
+        except FileNotFoundError as err:
+            logger.error("Could not collect screenshot.")
+            logger.error(err)
+            raise err from err
+
+        self.history[str(ImagingType.COLOR)].append(next_color)
+        try:
+            self.black_and_whitify(next_color, next_bw)
+        except (
+            FileNotFoundError,
+            Image.UnidentifiedImageError,
+            ValueError,
+            TypeError,
+        ) as err:
+            logger.error("Could not convert image to black and white.")
+            raise err from err
+
+        self.history[str(ImagingType.BW)].append(next_bw)
         return 0
