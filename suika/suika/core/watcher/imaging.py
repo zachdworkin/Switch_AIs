@@ -43,7 +43,7 @@ class Imaging:
             str(ImagingType.UNKN): [],
         }
         self.__create_paths()
-        self.path_prefixess = {
+        self.path_prefixes = {
             str(ImagingType.COLOR): os.path.join(
                 self.output_root,
                 str(ImagingType.COLOR),
@@ -74,14 +74,6 @@ class Imaging:
                 logger.error("Could not create upload paths.")
                 raise err from err
 
-    def get_idx(self, img_type):
-        """get index of last image
-
-        Returns:
-            int: position of last image
-        """
-        return len(self.history[str(img_type)])
-
     def black_and_whitify(self, screenshot, path):
         """Convert the image to black and white."""
         bw_img = None
@@ -100,15 +92,19 @@ class Imaging:
 
         self.wc.save_screenshot(bw_img, path)
 
-    def analyze_next_screenshot(self):
+    def is_game_over(self):
+        """Check if the game is over."""
+        return False
+
+    def analyze_next_screenshot(self, idx):
         """Analyze the image."""
         next_color = os.path.join(
-            self.path_prefixess[str(ImagingType.COLOR)],
-            f"{self.get_idx(str(ImagingType.COLOR))}.png",
+            self.path_prefixes[str(ImagingType.COLOR)],
+            f"{idx}.png",
         )
         next_bw = os.path.join(
-            self.path_prefixess[str(ImagingType.BW)],
-            f"{self.get_idx(str(ImagingType.BW))}.png",
+            self.path_prefixes[str(ImagingType.BW)],
+            f"{idx}.png",
         )
         try:
             self.wc.collect_screenshot(next_color)
