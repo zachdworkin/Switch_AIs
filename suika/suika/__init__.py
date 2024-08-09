@@ -57,6 +57,12 @@ def get_args(args) -> argparse.Namespace:
         default=os.environ["PWD"],
     )
     parser.add_argument(
+        "--training_limit",
+        type=int,
+        help="Limit of training iterations to execute before stopping",
+        default=1000,
+    )
+    parser.add_argument(
         "--quiet",
         type=bool,
         help="Use stderr for logging",
@@ -87,6 +93,7 @@ def cli_entry(args=None) -> int:
         rfl = ReinforcementLearning(
             parsed_args.app_name,
             os.path.join(parsed_args.output_root, "logs"),
+            parsed_args.training_limit,
         )
         rfl.train()
     except (
