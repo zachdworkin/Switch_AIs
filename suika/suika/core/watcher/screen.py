@@ -15,7 +15,7 @@ class WindowCapture:
             "none": {"left": 0, "top": 0, "right": 0, "bottom": 0},
             "ryujinx": {"left": 100, "top": 125, "right": 200, "bottom": 0},
         }
-        self.screenshot = None
+        self.screenshots = []
 
     def find_app_name(self, app_name):
         """
@@ -54,7 +54,7 @@ class WindowCapture:
         if offset not in self.offsets:
             offset = "none"
 
-        self.screenshot = ImageGrab.grab(
+        screenshot = ImageGrab.grab(
             bbox=(
                 window.left + self.offsets[offset]["left"],
                 window.top + self.offsets[offset]["top"],
@@ -63,27 +63,35 @@ class WindowCapture:
             )
         )
 
-    def save_screenshot(self, path):
+        self.screenshots.append(screenshot)
+        return screenshot
+
+    def save_screenshot(self, screenshot, path):
         """Save a screenshot based on path to it
 
         Args:
             screenshot (obj): screenshot to be saved
             path (str): location to save screenshot
         """
-        if path is None or self.screenshot is None:
+        if path is None or screenshot is None:
             return -1
 
-        self.screenshot.save(path)
+        screenshot.save(path)
         return 0
 
-    def close_screenshot(self):
+    def close_screenshot(self, screenshot):
         """close a screenshot fd
 
         Args:
             screenshot (obj): screenshot fd object
         """
-        if self.screenshot is not None:
-            self.screenshot.close()
+        if screenshot is not None:
+            screenshot.close()
+
+    def __del__(self):
+        """close all screenshots"""
+        for screenshot in self.screenshots:
+            self.close_screenshot(screenshot)
 
     def collect_screenshot(self, app_name):
         """collect a screenshot based on application name
@@ -96,6 +104,5 @@ class WindowCapture:
             print("Window not found")
             return
 
-        self.take_screenshot(window, app_name)
-        self.save_screenshot(f"{self.output_root}/screenshot.png")
-        self.close_screenshot()
+        screenshot = self.take_screenshot(window, app_name)
+        self.save_screenshot(screenshot, f"{self.output_root}/screenshot.png")
